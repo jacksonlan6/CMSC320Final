@@ -230,3 +230,26 @@ del df_games['stadium_id']
 del df_games['stadium']
 </code>
 </pre> 
+<h2 style="text-align: center">Exploratory Data Analysis and Visualization</h2>
+<p>Now, lets take a look at the datasets using statistical analysis and visualization techniques.</p>
+<p>Lets start with our dataset containing team stats between 2016 and 2021. I am going to begin with teams' scoring.</p>
+<pre>
+<code class="language-python">
+# Plot the average number of touchdowns for each team in main_df
+team_avg_tds = main_df.groupby('Team')['Passing TD'].mean() + main_df.groupby('Team')['Offensive Rush TD'].mean()
+team_avg_tds = team_avg_tds.sort_values(ascending=True)
+plt.figure(figsize=(15, 10))
+plt.bar(team_avg_tds.index, team_avg_tds.values)
+plt.xticks(rotation=90)
+plt.xlabel('Team')
+plt.ylabel('Average Number of TDs')
+plt.title('Average Number of TDs per Team')
+plt.show()
+</code>
+</pre> 
+
+
+
+
+
+
