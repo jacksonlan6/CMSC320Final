@@ -247,7 +247,145 @@ plt.title('Average Number of TDs per Team')
 plt.show()
 </code>
 </pre> 
-<img src="avgtds.png" alt="Graph Output" style="width:80%; max-width:600px;">
+<img src="avgtds.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>In our timeframe, the New Orleans Saints averaged the most pass and rush touchdowns, while the Jets averaged the least. Now, lets look at each team's average net rushing touchdowns.</p>
+<pre>
+<code class="language-python">
+avg_net_tds = main_df.groupby('Team')['Net Rush TDs'].mean()
+avg_net_tds = avg_net_tds.sort_values(ascending=True)
+plt.figure(figsize=(15, 10))
+plt.plot(avg_net_tds.index, avg_net_tds.values, marker='o')
+plt.xticks(rotation=90)
+plt.xlabel('Team')
+plt.ylabel('Average Net Rush TDs')
+plt.title('Average Net Rush TDs per Team')
+plt.show()
+</code>
+</pre>
+<img src="netrushtds.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>In the graph, most teams are grouped between -2.5 and 2.5 average net rush TDs, but there are outliers on both ends of the graph. The Jaguars, Jets, and Texans were letting up several more rush TDs then they scored, while the Patriots, Titans and Saints are the most impressive teams on this graph.</p>
+<p>Finally, lets take a look at how often each team made the playoffs over this span.</p>
+<pre>
+<code class="language-python">
+times_made_playoffs = main_df.groupby('Team')['Made Playoffs'].sum()
+times_made_playoffs = times_made_playoffs.sort_values(ascending=True)
+plt.figure(figsize=(15, 10))
+plt.bar(times_made_playoffs.index, times_made_playoffs.values)
+plt.xticks(rotation=90)
+plt.xlabel('Team')
+plt.ylabel('Number of Times Made Playoffs')
+plt.title('Number of Times Made Playoffs per Team')
+plt.show()
+</code>
+</pre>
+<img src="teamsmadeplayoffs.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>Again, we see the Jets at the bottom of our list, along with the Broncos and Redskins, all teams not making the playoffs in this span. The Chiefs made the playoffs every year in this span, while Patriots made it 5 out of 6 years.
+
+Note: There are only 32 NFL teams, but each of these graphs has 33 teams listed. Why? Well, in 2020, the Washington Redskins were renamed to the Washington Football Team. In fact, they were later renamed to the Washington Commanders, which is the current name of the team. In the six years my data covers, the Washington Redskins did not make the playoffs in four years, while in the two years the club was named the Football Team, they made the playoffs once.</p>
+<p>Lets do some statistical analysis on this data. In American Football, there are three phases of the game. The two most frequent are offense and defense, but there are also special teams plays throughout each game. Lets figure out if there are teams that are statistically significant outliers in terms of field goals made in this time span.</p>
+<pre>
+<code class="language-python">
+# Find the average # of FGs for each team
+avg_fg = main_df.groupby('Team')['Field Goal Attempts'].mean()
+avg_fg = avg_fg.sort_values(ascending=True)
+# lets plot this real quick
+plt.figure(figsize=(15, 10))
+plt.plot(avg_fg.index, avg_fg.values, marker='o')
+plt.xticks(rotation=90)
+plt.xlabel('Team')
+plt.ylabel('Average # of Field Goals Made')
+plt.title('Average # of Field Goals Made per Team')
+plt.show()
+</code>
+</pre>
+<img src="teamavgfgs.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>Just by looking at our graph, the Cleveland Browns look like a sizeable outlier. Lets take a further look.</p>
+<pre>
+<code class="language-python">
+avg_fg_all_teams = main_df['Field Goal Attempts'].mean()
+avg_fg_cleveland = main_df[main_df['Team'] == 'Browns']['Field Goal Attempts'].mean()
+print('Average # of Field Goals Made by the Cleveland Browns:', avg_fg_cleveland)
+print('Average # of Field Goals Made by all Teams:', avg_fg_all_teams)
+fg_std_dev = main_df['Field Goal Attempts'].std()
+print('Standard Deviation of Field Goal Attempts:', fg_std_dev)
+# run a t-test to see if the Browns are significantly worse than other teams at kicking FGs
+fg_cleveland = main_df[main_df['Team'] == 'Browns']['Field Goal Attempts']
+fg_all_teams = main_df['Field Goal Attempts']
+stats.ttest_1samp(fg_cleveland, avg_fg_all_teams)
+</code>
+</pre>
+<p>
+  Output:
+  Average # of Field Goals Made by the Cleveland Browns: 24.5
+  Average # of Field Goals Made by all Teams: 31.005208333333332
+  Standard Deviation of Field Goal Attempts: 5.945210044183382
+  TtestResult(statistic=-4.871300779670687, pvalue=0.004587661688497971, df=5)
+</p>
+<p>Wow! With a statistic value of -4.87 and a corresponding pvalue of .00459, it is clear that the Cleveland Browns averaged fewer FGs compared to the rest of the league from 2016-2021.</p>
+<p>Lets pivot to our other dataset, with box scores since 1999. Lets start by plotting the average scores of each game from each year.</p>
+<pre>
+<code class="language-python">
+#use df_games
+avg_score = df_games.groupby('season')['home_score'].mean() + df_games.groupby('season')['away_score'].mean()
+plt.figure(figsize=(15, 10))
+plt.plot(avg_score.index, avg_score.values, marker='o')
+plt.xticks(rotation=90)
+plt.xlabel('Season')
+plt.ylabel('Average Score')
+plt.title('Average Score per Season')
+plt.show()
+</code>
+</pre>
+<img src="sznavgscore.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>There is a lot of variance between each season, but there seems to be a clear increase in scoring after 2010 from the seasons before.</p>
+<p>Lets look at how homefield advantage has changed over the years, based on average point differential between home and away teams.</p>
+<pre>
+<code class="language-python">
+# Use the "result" column
+avg_point_diff = df_games.groupby('season')['result'].mean()
+plt.figure(figsize=(15, 10))
+plt.plot(avg_point_diff.index, avg_point_diff.values, marker='o')
+plt.xticks(rotation=90)
+plt.xlabel('Season')
+plt.ylabel('Home Score - Away Score')
+plt.title('Average Home Score - Away Score Since 1999')
+plt.show()
+</code>
+</pre>
+<img src="sznavgpointdiff.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>Not once in a season did the away teams outperform home teams. 2019 and 2020 were the closest to being even between home and away teams, while a number of sesasons had home teams score on average 3.5 points more than away teams!</p>
+<p>Finally, lets see how temperature impacts scoring.</p>
+<pre>
+<code class="language-python">
+avg_score_temp = df_games.groupby('temp')['away_score'].mean() + df_games.groupby('temp')['home_score'].mean()
+plt.figure(figsize=(15, 10))
+plt.plot(avg_score_temp.index, avg_score_temp.values, marker='o')
+plt.xticks(rotation=90)
+plt.xlabel('Temperature')
+plt.ylabel('Average Score')
+plt.title('Average Score per Temperature')
+plt.savefig("sznavgtemp.png")
+plt.show()
+</code>
+</pre>
+<img src="sznavgtemp.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>We can assume that the extreme outliers have a particularly small sample size which causes individual games to overreprsent in those values.</p>
+<p>Lets go back to the graph that displays the average score for each game by season. Lets examine to see if there really is a significant difference in average scoring from before 2010 and after.</p>
+<pre>
+<code class="language-python">
+scores_before_2010 = avg_score[:11]
+scores_after_2010 = avg_score[11:]
+stats.ttest_ind(scores_before_2010, scores_after_2010)
+</code>
+</pre>
+<p>
+  Output:
+  TtestResult(statistic=-5.8727402595026215, pvalue=4.662982846161928e-06, df=24.0)
+</p>
+<p>With a t-stat of -5.87 and a pvalue of 0.00000466, there is significant evidence that the mean scores of games from seasons after 2010 were higher than those before 2010.</p>
+<p>Lets examine the dataset of team stats further using ML.</p>
+<h2>Primary Analysis</h2>
+
 
 
 
