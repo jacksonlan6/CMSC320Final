@@ -56,3 +56,177 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
 </code>
 </pre>
+<p>
+  Lets look at the team stats data from 2016-2021. I need to combine data from a lot of different files over each season. We can look at the data after we merge it together.
+</p>
+<pre>
+<code class="language-python">
+# Prepare the data that compares team stats over different seasons
+# 2016
+df_def2016 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2016_team_stats/2016_team_defense-rushing.csv')
+df_offrush2016 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2016_team_stats/2016_team_offense-rushing.csv')
+df_offpass2016 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2016_team_stats/2016_team_offense-passing.csv')
+df_offscoring2016 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2016_team_stats/2016_team_offense-scoring.csv')
+df_spec2016 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2016_team_stats/2016_team_specialteams-fieldgoals.csv')
+df_2016 = pd.merge(df_def2016, df_offrush2016, on='Team')
+df_2016 = pd.merge(df_2016, df_offpass2016, on='Team')
+df_2016 = pd.merge(df_2016, df_offscoring2016, on='Team')
+df_2016 = pd.merge(df_2016, df_spec2016, on='Team',suffixes=('_current', '_fg'))
+playoff_teams2016 = ['Dolphins', 'Steelers', 'Raiders','Texans','Chiefs','Patriots', 'Giants', 'Packers', 'Lions', 'Seahawks', 'Cowboys','Falcons']
+df_2016["Made Playoffs"] = df_2016["Team"].apply(lambda x: 1 if x in playoff_teams2016 else 0)
+df_2016["Season"] = df_2016["Team"].apply(lambda x: "2016")
+# 2017
+df_def2017 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2017_team_stats/2017_team_defense-rushing.csv')
+df_offrush2017 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2017_team_stats/2017_team_offense-rushing.csv')
+df_offpass2017 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2017_team_stats/2017_team_offense-passing.csv')
+df_offscoring2017 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2017_team_stats/2017_team_offense-scoring.csv')
+df_fg2017 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2017_team_stats/2017_team_specialteams-fieldgoals.csv')
+df_2017 = pd.merge(df_def2017, df_offrush2017, on='Team')
+df_2017 = pd.merge(df_2017, df_offpass2017, on='Team')
+df_2017 = pd.merge(df_2017, df_offscoring2017, on='Team')
+df_2017 = pd.merge(df_2017, df_fg2017, on='Team',suffixes=('_current', '_fg'))
+playoff_teams2017 = ['Panthers', 'Saints', 'Falcons', 'Rams', 'Vikings', 'Eagles', 'Bills', 'Jaguars', 'Titans', 'Chiefs', 'Patriots', 'Steelers']
+df_2017["Made Playoffs"] = df_2017["Team"].apply(lambda x: 1 if x in playoff_teams2017 else 0)
+df_2017["Season"] = df_2017["Team"].apply(lambda x: "2017")
+# 2018
+df_def2018 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2018_team_stats/2018_team_defense-rushing.csv')
+df_offrush2018 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2018_team_stats/2018_team_offense-rushing.csv')
+df_offpass2018 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2018_team_stats/2018_team_offense-passing.csv')
+df_offscoring2018 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2018_team_stats/2018_team_offense-scoring.csv')
+df_fg2018 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2018_team_stats/2018_team_specialteams-fieldgoals.csv')
+df_2018 = pd.merge(df_def2018, df_offrush2018, on='Team')
+df_2018 = pd.merge(df_2018, df_offpass2018, on='Team')
+df_2018 = pd.merge(df_2018, df_offscoring2018, on='Team')
+df_2018 = pd.merge(df_2018, df_fg2018, on='Team',suffixes=('_current', '_fg'))
+playoff_teams2018 = ['Chiefs','Patriots','Texans','Ravens','Chargers','Colts','Saints','Rams','Bears','Cowboys','Seahawks','Eagles']
+df_2018["Made Playoffs"] = df_2018["Team"].apply(lambda x: 1 if x in playoff_teams2018 else 0)
+df_2018["Season"] = df_2018["Team"].apply(lambda x: "2018")
+
+# 2019
+df_def2019 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2019_team_stats/2019_team_defense-rushing.csv')
+df_offrush2019 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2019_team_stats/2019_team_offense-rushing.csv')
+df_offpass2019 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2019_team_stats/2019_team_offense-passing.csv')
+df_offscoring2019 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2019_team_stats/2019_team_offense-scoring.csv')
+df_fg2019 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2019_team_stats/2019_team_specialteams-fieldgoals.csv')
+df_2019 = pd.merge(df_def2019, df_offrush2019, on='Team')
+df_2019 = pd.merge(df_2019, df_offpass2019, on='Team')
+df_2019 = pd.merge(df_2019, df_offscoring2019, on='Team')
+df_2019 = pd.merge(df_2019, df_fg2019, on='Team',suffixes=('_current', '_fg'))
+playoff_teams2019 = ['Ravens','Chiefs','Patriots', 'Texans','Bills','Titans','49ers','Packers','Saints','Eagles','Seahawks','Vikings']
+df_2019["Made Playoffs"] = df_2019["Team"].apply(lambda x: 1 if x in playoff_teams2019 else 0)
+df_2019["Season"] = df_2019["Team"].apply(lambda x: "2019")
+
+# 2020
+df_def2020 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2020_team_stats/2020_team_defense-rushing.csv')
+df_offrush2020 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2020_team_stats/2020_team_offense-rushing.csv')
+df_offpass2020 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2020_team_stats/2020_team_offense-passing.csv')
+df_offscoring2020 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2020_team_stats/2020_team_offense-scoring.csv')
+df_fg2020 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2020_team_stats/2020_team_specialteams-fieldgoals.csv')
+df_2020 = pd.merge(df_def2020, df_offrush2020, on='Team')
+df_2020 = pd.merge(df_2020, df_offpass2020, on='Team')
+df_2020 = pd.merge(df_2020, df_offscoring2020, on='Team')
+df_2020 = pd.merge(df_2020, df_fg2020, on='Team',suffixes=('_current', '_fg'))
+playoff_teams2020 = ['Chiefs','Bills','Steelers','Titans','Ravens','Browns','Colts','Packers','Saints','FootballTeam','Seahawks','Buccaneers','Rams','Bears']
+df_2020["Made Playoffs"] = df_2020["Team"].apply(lambda x: 1 if x in playoff_teams2020 else 0)
+df_2020["Season"] = df_2020["Team"].apply(lambda x: "2020")
+
+# 2021
+df_def2021 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2021_Team_Stats/2021_team_defense-rushing.csv')
+df_offrush2021 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2021_Team_Stats/2021_team_offense-rushing.csv')
+df_offpass2021 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2021_Team_Stats/2021_team_offense-passing.csv')
+df_offscoring2021 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2021_Team_Stats/2021_team_offense-scoring.csv')
+df_fg21 = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/2021_Team_Stats/2021_team_specialteams-fieldgoals.csv')
+df_2021 = pd.merge(df_def2021, df_offrush2021, on='Team')
+df_2021 = pd.merge(df_2021, df_offpass2021, on='Team')
+df_2021 = pd.merge(df_2021, df_offscoring2021, on='Team')
+df_2021 = pd.merge(df_2021, df_fg21, on='Team',suffixes=('_current', '_fg'))
+playoff_teams2021 = ['Chiefs','Bills', 'Titans', 'Bengals','Raiders','Patriots','Steelers','Packers','Buccaneers','Cowboys','Rams','Cardinals','49ers','Eagles']
+df_2021["Made Playoffs"] = df_2021["Team"].apply(lambda x: 1 if x in playoff_teams2021 else 0)
+df_2021["Season"] = df_2021["Team"].apply(lambda x: "2021")
+
+main_df = pd.concat([df_2016, df_2017, df_2018, df_2019, df_2020, df_2021])
+</code>
+</pre>
+<pre>
+<code class="language-python">
+del main_df['20+_x']
+del main_df['40+_x']
+del main_df['Lng_x']
+del main_df['Rush 1st_x']
+del main_df['Rush 1st%_x']
+del main_df['Rush FUM_x']
+main_df = main_df.rename(columns={'Att_x':'Rush Att Against','Rush Yds_x':'Rush Yds Against', 'YPC_x':'Rush YPC Against', 'TD_x':'Rush TD Against'})
+del main_df['20+_y']
+del main_df['40+_y']
+del main_df['Lng_y']
+del main_df['Rush 1st_y']
+del main_df['Rush 1st%_y']
+del main_df['Rush FUM_y']
+main_df = main_df.rename(columns={'Att_y':'Offensive Rush Att', 'Rush Yds_y':'Offensive Rush Yds', 'YPC_y':'Offensive Rush YPC', 'TD_y':'Offensive Rush TD'})
+del main_df['Cmp']
+del main_df['Yds/Att']
+del main_df['1st%']
+del main_df['20+']
+del main_df['40+']
+del main_df['Lng_current']
+del main_df['Sck']
+del main_df['SckY']
+main_df = main_df.rename(columns={'Att_current':'Passing Att','Cmp%':'Passing Completion %', 'Pass Yds':'Passing Yds', 'TD':'Passing TD', 'Int':'Passing Int','1st':'Passing 1st Down'})
+del main_df['Rec TD']
+del main_df['Rsh TD']
+
+del main_df['1-19 > A-M']
+del main_df['20-29 > A-M']
+del main_df['30-39 > A-M']
+del main_df['40-49 > A-M']
+del main_df['50+ > A-M']
+del main_df['FG Blk']
+del main_df['Lng_fg']
+main_df = main_df.rename(columns={'Att_fg':'Field Goal Attempts'})
+
+main_df['Net Rush TDs'] = main_df['Offensive Rush TD'] - main_df['Rush TD Against']
+</code>
+</pre>  
+<p>Now lets prepare the dataset containing NFL box scores since 1999</p>
+<pre>
+<code class="language-python">
+# Prepare the data for avg ppg by week for all games since 1999
+df_games = pd.read_csv('/content/drive/MyDrive/320FinalProjCsvFiles/games.csv')
+
+# Delete unnecessary columns
+del df_games['game_id']
+del df_games['gameday']
+del df_games['gametime']
+del df_games['location']
+del df_games['overtime']
+del df_games['old_game_id']
+del df_games['gsis']
+del df_games['nfl_detail_id']
+del df_games['pfr']
+del df_games['pff']
+del df_games['espn']
+del df_games['ftn']
+del df_games['away_rest']
+del df_games['home_rest']
+del df_games['away_moneyline']
+del df_games['home_moneyline']
+del df_games['spread_line']
+del df_games['away_spread_odds']
+del df_games['home_spread_odds']
+del df_games['total_line']
+del df_games['under_odds']
+del df_games['over_odds']
+del df_games['roof']
+del df_games['surface']
+del df_games['wind']
+del df_games['away_qb_id']
+del df_games['home_qb_id']
+del df_games['away_coach']
+del df_games['home_coach']
+del df_games['away_qb_name']
+del df_games['home_qb_name']
+del df_games['referee']
+del df_games['stadium_id']
+del df_games['stadium']
+</code>
+</pre> 
