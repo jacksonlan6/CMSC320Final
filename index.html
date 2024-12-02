@@ -384,7 +384,69 @@ stats.ttest_ind(scores_before_2010, scores_after_2010)
 </p>
 <p>With a t-stat of -5.87 and a pvalue of 0.00000466, there is significant evidence that the mean scores of games from seasons after 2010 were higher than those before 2010.</p>
 <p>Lets examine the dataset of team stats further using ML.</p>
-<h2>Primary Analysis</h2>
+<h2 style="text-align: center">Primary Analysis</h2>
+<p>This part of the Data Lifecycle involves analyzing our data using ML models which can allow us to extrapolate our data beyond its current scope. I am going to train a binary classifier that inputs team stats and outputs a 1 if it believes the team would make the playoffs, and a 0 otherwise.</p>
+<pre>
+<code class="language-python">
+# Input features: rush yds against, net rush tds, rush yards for, passing yards, passing tds, and FGM
+X = main_df[['Rush Yds Against', 'Net Rush TDs', 'Offensive Rush Yds', 'Passing Yds', 'Passing TD', 'Field Goal Attempts']]
+y = main_df['Made Playoffs']
+# Split data into train/test splits
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Scale data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(classification_report(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+
+feature_importances = pd.Series(model.feature_importances_, index=X.columns)
+feature_importances.sort_values(ascending=False, inplace=True)
+plt.figure(figsize=(10, 6))
+sns.barplot(x=feature_importances.index, y=feature_importances.values)
+plt.title('Feature Importances')
+plt.xlabel('Features')
+plt.ylabel('Importance')
+plt.savefig("featureimportances.png")
+plt.show()
+</code>
+</pre>
+<p>
+                precision    recall  f1-score   support
+
+             0       0.77      0.87      0.82        23
+             1       0.77      0.62      0.69        16
+  
+      accuracy                           0.77        39
+     macro avg       0.77      0.75      0.75        39
+  weighted avg       0.77      0.77      0.76        39
+
+  [[20  3]
+   [ 6 10]]
+</p>
+<img src="featureimportances.png" alt="Graph Output" style="width:100%; max-width:600px;">
+<p>The model was able to correctly predict 3/4 of teams' playoff outcomes, with Offensive Rush YDs and Passing TDs being the most important features of the model, while field goals were the least important feature.</p>
+<h2 style="text-align: center">Insights and Conclusions</h2>
+<p>
+  After reading this project, you should be more comfortable with approaching datasets and performing data analysis. Additionally, there are a number of takeaways from the analysis I did on NFL teams and box scores. Average scoring has been greater since 2010 compared to 1999-2010. Rushing yards and passing TDs are of particular importance to determining if a team makes the playoffs In each season since 1999, home teams have scored more points on average compared to away teams
+
+  Even if you, the reader, are a football fan, I hope you have learned more about how team and game stats have changed over the years and how they affect team success. If this is your first time exploring this topic, I hope that the topic was interesting and that the data analysis was meaningful as a reader.
+</p>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
