@@ -36,3 +36,23 @@
   passing, rushing, scoring, defensive rushing, and special teams field goals statistics. All of these can provide a rough 
   estimation of a team in a given year, and we will learn what differentiates playoff and non playoff teams.
 </p>
+<p>
+  In order to accomplish this, I will be using Python, through Google Colab, similar to Jupyter Notebook. To begin, lets import 
+  useful libraries. Like Pandas, which will allow us to store, view, and manipulate data. Matplotlib and seaborn provides tools 
+  to plot, graph, and otherwise display data and output from our ML model. Other imports benefit us to create a ML model later on.
+</p>
+<pre>
+<code class="language-python">
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scipy.stats as stats
+
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+</code>
+</pre>
